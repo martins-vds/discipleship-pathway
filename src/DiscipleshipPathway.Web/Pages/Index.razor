@@ -1,0 +1,24 @@
+﻿@page "/"
+
+
+@inject IAssessmentService AssessmentService;
+
+<PageTitle>Index</PageTitle>
+
+@if(Assessment is not null){
+    @foreach (var question in Assessment.Questions)
+    {
+        <p>@question.Text</p>
+    }
+}else{
+    <p>Loading assessment...</p>
+}
+
+@code{
+    public Assessment? Assessment { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Assessment = await AssessmentService.GetAssessment();
+    }
+}
