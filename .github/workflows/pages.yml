@@ -45,6 +45,8 @@ jobs:
         run: dotnet publish --no-build --verbosity normal -c Release -o ./_site --nologo
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
+        with:
+            path: ./_site/wwwroot
 
   # Deployment job
   deploy:
