@@ -42,7 +42,7 @@ jobs:
       - name: Test
         run: dotnet test -c Release --no-build --verbosity normal    
       - name: Publish
-        run: dotnet publish --no-build --verbosity normal -c Release -o ./_site --nologo
+        run: dotnet publish --verbosity normal -c Release -o ./_site --nologo
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
