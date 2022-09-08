@@ -48,10 +48,10 @@ namespace DiscipleshipPathway.Web.Models
 
             foreach (var groupOfQuestions in questionsBySection)
             {
-                results.AverageBySection.Add(new SectionScore()
+                results.AverageBySection.Add(new SectionAverage()
                 {
                     Section = groupOfQuestions.Key,
-                    Score = groupOfQuestions.Sum(q => q.Answer) / groupOfQuestions.Count()
+                    Average = groupOfQuestions.Sum(q => q.Answer) / (double) groupOfQuestions.Count()
                 });
             }
 

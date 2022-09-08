@@ -24,17 +24,17 @@ namespace DiscipleshipPathway.Tests
 
             results.Should().BeEquivalentTo(new AssessmentResults()
             {
-                AverageBySection = new List<SectionScore>()
+                AverageBySection = new List<SectionAverage>()
                 {
-                    new SectionScore()
+                    new SectionAverage()
                     {
                         Section = 1,
-                        Score = 1
+                        Average = 1
                     },
-                    new SectionScore()
+                    new SectionAverage()
                     {
                         Section = 2,
-                        Score = 5
+                        Average = 5
                     }
                 }
             });

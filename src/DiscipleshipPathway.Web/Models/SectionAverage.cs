@@ -1,12 +1,12 @@
 ﻿namespace DiscipleshipPathway.Web.Models
 {
-    public class SectionScore
+    public class SectionAverage
     {
-        public SectionScore()
+        public SectionAverage()
         {
         }
 
         public int Section { get; set; }
-        public int Score { get; set; }
+        public double Average { get; set; }
     }
 }

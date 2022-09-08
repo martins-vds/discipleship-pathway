@@ -5,20 +5,54 @@
 
 <PageTitle>Index</PageTitle>
 
-@if(Assessment is not null){
-    @foreach (var question in Assessment.Questions)
+@if (Assessment is not null)
+{
+    @foreach (var questionsBySection in Assessment.Questions.GroupBy(q => q.Section))
     {
-        <p>@question.Text</p>
+        <p>Section @questionsBySection.Key</p>
+
+        @foreach (var question in questionsBySection)
+        {
+            <p>@question.Text</p>
+            <MudRadioGroup T="int" SelectedOptionChanged="@(answer => Assessment.AnswerQuestion(question.Id, answer))">
+                @for (int i = 0; i < 5; i++)
+                {
+                    <MudRadio Option="@(i + 1)" Color="Color.Primary" Size="Size.Small"></MudRadio>
+                }
+            </MudRadioGroup>    
+        }
     }
-}else{
+
+    <MudButton OnClick="CalculateResults" Color="Color.Primary" Variant="Variant.Filled">
+        Calculate Results
+    </MudButton>
+
+    @if(Results is not null){
+        <p><strong>Results</strong></p>
+
+        @foreach (var result in Results.AverageBySection)
+        {
+            <p>Section: @result.Section, Average: @result.Average</p>
+        }
+    }
+}
+else
+{
     <p>Loading assessment...</p>
 }
 
-@code{
+@code {
     public Assessment? Assessment { get; set; }
+    public AssessmentResults? Results { get; set; }
+
+    private bool calculatingResults = false;
 
     protected override async Task OnInitializedAsync()
     {
         Assessment = await AssessmentService.GetAssessment();
+    }
+
+    private void CalculateResults(){
+        Results = Assessment.CalculateResults();
     }
 }

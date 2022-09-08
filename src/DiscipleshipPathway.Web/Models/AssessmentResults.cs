@@ -2,11 +2,11 @@
 {
     public class AssessmentResults
     {
-        public IList<SectionScore> AverageBySection { get; set; }
+        public IList<SectionAverage> AverageBySection { get; set; }
 
         public AssessmentResults()
         {
-            AverageBySection = new List<SectionScore>();
+            AverageBySection = new List<SectionAverage>();
         }
     }
 }
