@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using ChartJs.Blazor.RadarChart
 
 
 @inject IAssessmentService AssessmentService;
@@ -19,7 +20,7 @@
                 {
                     <MudRadio Option="@(i + 1)" Color="Color.Primary" Size="Size.Small"></MudRadio>
                 }
-            </MudRadioGroup>    
+            </MudRadioGroup>
         }
     }
 
@@ -27,13 +28,11 @@
         Calculate Results
     </MudButton>
 
-    @if(Results is not null){
+    @if (Results is not null)
+    {
         <p><strong>Results</strong></p>
 
-        @foreach (var result in Results.AverageBySection)
-        {
-            <p>Section: @result.Section, Average: @result.Average</p>
-        }
+        <Chart Config="chartConfig"></Chart>
     }
 }
 else
@@ -47,12 +46,47 @@ else
 
     private bool calculatingResults = false;
 
+    private RadarConfig? chartConfig;
+
     protected override async Task OnInitializedAsync()
     {
         Assessment = await AssessmentService.GetAssessment();
     }
 
-    private void CalculateResults(){
+    private void CalculateResults()
+    {
         Results = Assessment.CalculateResults();
+
+        chartConfig = new RadarConfig()
+            {
+                Options = new RadarOptions()
+                {
+                    Responsive = true,
+                    Title = new ChartJs.Blazor.Common.OptionsTitle()
+                    {
+                        Text = "Results",
+                        Display = true
+                    }
+                }
+            };
+
+        var dataset = new RadarDataset<double>();
+
+        foreach (var sectionAverage in Results.AverageBySection)
+        {
+            chartConfig.Data.Labels.Add($"Section {sectionAverage.Section}");
+            dataset.Add(sectionAverage.Average);
+        }
+
+        chartConfig.Data.Datasets.Add(dataset);
+        chartConfig.Options.Scale = new ChartJs.Blazor.Common.Axes.LinearRadialAxis()
+            {
+                Ticks = new ChartJs.Blazor.Common.Axes.Ticks.LinearRadialTicks()
+                {
+                    BeginAtZero = true,
+                    Max = 5,
+                    Min = 0
+                }
+            };
     }
 }
