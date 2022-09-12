@@ -1,0 +1,71 @@
+﻿@using ChartJs.Blazor.RadarChart
+
+@if (IsVisible && Results is not null)
+{
+    <MudText>Results</MudText>
+    <Chart Config="_chartConfig"></Chart>
+}
+
+@code {
+    private RadarConfig? _chartConfig;
+    private AssessmentResults? _prevResults;
+    private bool _shouldRender;
+
+    [Parameter]
+    public AssessmentResults? Results { get; set; }
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    protected override bool ShouldRender() => _shouldRender;
+
+    protected override void OnInitialized()
+    {
+        _chartConfig = GetChartConfig();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Results is null || (Results is not null && _prevResults == Results))
+        {
+            _shouldRender = false;
+            return;
+        }
+
+        _chartConfig.Data.Labels.Clear();
+        _chartConfig.Data.Datasets.Clear();
+
+        var dataset = new RadarDataset<double>();
+
+        foreach (var sectionAverage in Results.AverageBySection)
+        {
+            _chartConfig.Data.Labels.Add($"Section {sectionAverage.Section}");
+            dataset.Add(sectionAverage.Average);
+        }
+
+        _chartConfig.Data.Datasets.Add(dataset);
+
+        _shouldRender = true;
+        _prevResults = Results;
+    }
+
+    private RadarConfig GetChartConfig()
+    {
+        return new RadarConfig()
+            {
+                Options = new RadarOptions()
+                {
+                    Responsive = true,
+                    Scale = new ChartJs.Blazor.Common.Axes.LinearRadialAxis()
+                    {
+                        Ticks = new ChartJs.Blazor.Common.Axes.Ticks.LinearRadialTicks()
+                        {
+                            BeginAtZero = true,
+                            Max = 5,
+                            Min = 0
+                        }
+                    }
+                }
+            };
+    }
+}

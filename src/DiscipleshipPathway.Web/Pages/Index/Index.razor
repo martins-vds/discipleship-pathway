@@ -1,0 +1,55 @@
+﻿@page "/"
+@using ChartJs.Blazor.RadarChart
+
+
+@inject IAssessmentService AssessmentService;
+
+<PageTitle>Index</PageTitle>
+
+@if (Assessment is not null)
+{
+    @foreach (var questionsBySection in Assessment.Questions.GroupBy(q => q.Section))
+    {
+        <p>Section @questionsBySection.Key</p>
+
+        @foreach (var question in questionsBySection)
+        {
+            <p>@question.Text</p>
+            <MudRadioGroup T="int" SelectedOptionChanged="@(answer => Assessment.AnswerQuestion(question.Id, answer))">
+                @for (int i = 0; i < 5; i++)
+                {
+                    <MudRadio Option="@(i + 1)" Color="Color.Primary" Size="Size.Small"></MudRadio>
+                }
+            </MudRadioGroup>
+        }
+    }
+
+    <MudButton OnClick="CalculateResults" Color="Color.Primary" Variant="Variant.Filled">
+        Calculate Results
+    </MudButton>
+
+    <AssessmentResultsChart Results="Results" IsVisible="_chartResultsVisible"></AssessmentResultsChart>
+}
+else
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+
+@code {
+    public Assessment? Assessment { get; set; }
+    public AssessmentResults? Results { get; set; }
+
+    private bool _chartResultsVisible = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Assessment = await AssessmentService.GetAssessment();
+    }
+
+    private void CalculateResults()
+    {
+        _chartResultsVisible = false;
+        Results = Assessment.CalculateResults();
+        _chartResultsVisible = true;
+    }
+}
