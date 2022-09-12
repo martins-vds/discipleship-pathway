@@ -60,6 +60,7 @@ jobs:
         uses: 5monkeys/cobertura-action@master
         with:
           path: coveragereport/*.xml
+          minimum_coverage: 10
 
   # Deployment job
   deploy:
