@@ -41,8 +41,10 @@ jobs:
         run: dotnet build -c Release --no-restore
       - name: Test
         run: dotnet test -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
-      - name: Copy Coverage To Predictable Location
-        run: cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
+      - name: Create code coverage report
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator -reports:coverage/**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:'Cobertura'
       - name: Publish
         run: dotnet publish --verbosity normal -c Release -o ./_site --nologo
       - name: Rewrite base href
@@ -58,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: coverage
+          path: coveragereport
         # Use always() to always run this step to publish test results when there are test failures
         if: ${{ always() }}
 
