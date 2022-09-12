@@ -41,10 +41,18 @@ jobs:
         run: dotnet build -c Release --no-restore
       - name: Test
         run: dotnet test -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
-      - name: Create code coverage report
-        run: |
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          reportgenerator -reports:coverage/**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:'Cobertura'
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: false
+          indicators: true
+          output: both
+          thresholds: '20 80'
       - name: Publish
         run: dotnet publish --verbosity normal -c Release -o ./_site --nologo
       - name: Rewrite base href
@@ -56,11 +64,9 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
             path: ./_site/wwwroot
-      - name: Upload test results
-        uses: 5monkeys/cobertura-action@master
-        with:
-          path: coveragereport/*.xml
-          minimum_coverage: 10
+      - name: Updating Job Summary
+        if: ${{ always() }}
+        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY      
 
   # Deployment job
   deploy:
