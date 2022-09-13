@@ -49,6 +49,6 @@
         var results = Assessment?.CalculateResults();
 
         StateService.SaveAssessmentResults(results);
-        NavigationManager.NavigateTo("/results");
+        NavigationManager.NavigateTo($"{NavigationManager.BaseUri.TrimEnd('/')}/results");
     }
 }
