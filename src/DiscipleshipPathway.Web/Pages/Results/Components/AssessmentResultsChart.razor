@@ -1,23 +1,20 @@
 ﻿@using ChartJs.Blazor.RadarChart
+@using ChartJs.Blazor.Util
 
 @if (IsVisible && Results is not null)
 {
-    <MudText>Results</MudText>
+    <MudText Typo="Typo.h2" Align="Align.Center" Class="mb-4">Assessment Results</MudText>
     <Chart Config="_chartConfig"></Chart>
 }
 
 @code {
     private RadarConfig? _chartConfig;
-    private AssessmentResults? _prevResults;
-    private bool _shouldRender;
 
     [Parameter]
     public AssessmentResults? Results { get; set; }
 
     [Parameter]
     public bool IsVisible { get; set; }
-
-    protected override bool ShouldRender() => _shouldRender;
 
     protected override void OnInitialized()
     {
@@ -26,16 +23,16 @@
 
     protected override void OnParametersSet()
     {
-        if (Results is null || (Results is not null && _prevResults == Results))
+        if (Results is null)
         {
-            _shouldRender = false;
             return;
         }
 
         _chartConfig.Data.Labels.Clear();
         _chartConfig.Data.Datasets.Clear();
 
-        var dataset = new RadarDataset<double>();
+        var dataset = CreateDataset("You");
+        var perfectDataset = CreatePerfectDataset("Disciple", Results.AverageBySection.Count);
 
         foreach (var sectionAverage in Results.AverageBySection)
         {
@@ -43,10 +40,8 @@
             dataset.Add(sectionAverage.Average);
         }
 
+        _chartConfig.Data.Datasets.Add(perfectDataset);
         _chartConfig.Data.Datasets.Add(dataset);
-
-        _shouldRender = true;
-        _prevResults = Results;
     }
 
     private RadarConfig GetChartConfig()
@@ -67,5 +62,22 @@
                     }
                 }
             };
+    }
+
+    private RadarDataset<double> CreateDataset(string label)
+    {
+        var dataset = new RadarDataset<double>();
+        dataset.Label = label;
+        dataset.BackgroundColor = "rgba(54, 162, 235, 0.2)";
+        dataset.BorderColor = "rgb(54, 162, 235)";
+        return dataset;
+    }
+
+    private RadarDataset<double> CreatePerfectDataset(string label, int sections){
+        var dataset = new RadarDataset<double>(Enumerable.Repeat<double>(5, sections));
+        dataset.Label = label;
+        dataset.BackgroundColor = "rgba(255, 99, 132, 0.2)";
+        dataset.BorderColor = "rgb(255, 99, 132)";
+        return dataset;
     }
 }

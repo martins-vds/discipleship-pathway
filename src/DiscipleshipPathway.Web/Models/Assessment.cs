@@ -51,7 +51,7 @@ namespace DiscipleshipPathway.Web.Models
                 results.AverageBySection.Add(new SectionAverage()
                 {
                     Section = groupOfQuestions.Key,
-                    Average = groupOfQuestions.Sum(q => q.Answer) / (double) groupOfQuestions.Count()
+                    Average = groupOfQuestions.Sum(q => q.Answer) / (double)groupOfQuestions.Count()
                 });
             }
 

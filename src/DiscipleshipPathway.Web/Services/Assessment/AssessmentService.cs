@@ -1,10 +1,8 @@
-﻿using DiscipleshipPathway.Web.Models;
-using CsvHelper;
+﻿using CsvHelper;
+using DiscipleshipPathway.Web.Models;
 using System.Globalization;
-using System.Net.Http.Json;
-using static System.Net.WebRequestMethods;
 
-namespace DiscipleshipPathway.Web.Services
+namespace DiscipleshipPathway.Web.Services.AssessmentService
 {
     public class AssessmentService : IAssessmentService
     {
@@ -21,7 +19,7 @@ namespace DiscipleshipPathway.Web.Services
 
             using var reader = new StreamReader(csvStream);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            
+
             var questions = csv.GetRecords<Question>();
 
             return new Assessment(questions);

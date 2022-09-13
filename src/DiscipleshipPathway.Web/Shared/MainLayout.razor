@@ -6,6 +6,11 @@
 
 <MudLayout>
     <MudMainContent>
-        @Body
+        <MudContainer MaxWidth="MaxWidth.Medium">
+            @Body
+        </MudContainer>
+        <MudScrollToTop>
+            <MudFab Color="Color.Primary" Icon="@Icons.Filled.ArrowCircleUp" />
+        </MudScrollToTop>
     </MudMainContent>
 </MudLayout>

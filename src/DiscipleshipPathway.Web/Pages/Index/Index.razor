@@ -1,55 +1,54 @@
 ﻿@page "/"
-@using ChartJs.Blazor.RadarChart
 
+@inject IStateService StateService
+@inject IAssessmentService AssessmentService
+@inject NavigationManager NavigationManager
 
-@inject IAssessmentService AssessmentService;
-
-<PageTitle>Index</PageTitle>
+<PageTitle>Discipleship Pathway Assessment</PageTitle>
 
 @if (Assessment is not null)
 {
-    @foreach (var questionsBySection in Assessment.Questions.GroupBy(q => q.Section))
-    {
-        <p>Section @questionsBySection.Key</p>
-
-        @foreach (var question in questionsBySection)
+    <MudText Typo="Typo.h2" Align="Align.Center">Discipleship Pathway Assessment</MudText>
+    <div class="d-flex flex-column mt-4">
+        @foreach (var questionsBySection in Assessment.Questions.GroupBy(q => q.Section))
         {
-            <p>@question.Text</p>
-            <MudRadioGroup T="int" SelectedOptionChanged="@(answer => Assessment.AnswerQuestion(question.Id, answer))">
-                @for (int i = 0; i < 5; i++)
-                {
-                    <MudRadio Option="@(i + 1)" Color="Color.Primary" Size="Size.Small"></MudRadio>
-                }
-            </MudRadioGroup>
+            <MudText Typo="Typo.h5">Section @questionsBySection.Key</MudText>
+            <MudDivider Class="mb-4"   />
+            @foreach (var question in questionsBySection)
+            {
+                <MudText Typo="Typo.body1">@($"{question.Order}) {question.Text}")</MudText>
+                <div class="d-flex flex-row align-center mb-2">
+                    <span class="flex-grow-0">Totally Disagree</span>
+                    <MudRadioGroup Class="flex-grow-1" InputClass="d-flex flex-row justify-space-between" Required="true" T="int" SelectedOptionChanged="@(answer => Assessment.AnswerQuestion(question.Id, answer))">
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        <MudRadio Option="@(i + 1)" Color="Color.Primary" Size="Size.Small"></MudRadio>
+                    }
+                    </MudRadioGroup>
+                    <span class="flex-grow-0">Totally Agree</span>
+                </div>
+            }
         }
-    }
+    </div>
 
-    <MudButton OnClick="CalculateResults" Color="Color.Primary" Variant="Variant.Filled">
-        Calculate Results
-    </MudButton>
-
-    <AssessmentResultsChart Results="Results" IsVisible="_chartResultsVisible"></AssessmentResultsChart>
-}
-else
-{
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+    <MudButton OnClick="CalculateAndViewResults" Color="Color.Primary" Variant="Variant.Filled" FullWidth="true">
+        View Results
+    </MudButton>    
 }
 
 @code {
     public Assessment? Assessment { get; set; }
-    public AssessmentResults? Results { get; set; }
-
-    private bool _chartResultsVisible = false;
 
     protected override async Task OnInitializedAsync()
     {
         Assessment = await AssessmentService.GetAssessment();
     }
 
-    private void CalculateResults()
+    private void CalculateAndViewResults()
     {
-        _chartResultsVisible = false;
-        Results = Assessment.CalculateResults();
-        _chartResultsVisible = true;
+        var results = Assessment?.CalculateResults();
+
+        StateService.SaveAssessmentResults(results);
+        NavigationManager.NavigateTo("/results");
     }
 }

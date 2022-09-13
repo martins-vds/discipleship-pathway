@@ -1,0 +1,30 @@
+﻿@page "/results"
+
+@inject IStateService StateService;
+
+@if (!_loading)
+{
+    @if (_results is not null)
+    {
+        <AssessmentResultsChart Results="_results" IsVisible="true"></AssessmentResultsChart>
+    }
+    else
+    {
+        <MudText Typo="Typo.h4" Color="Color.Error" Align="Align.Center">Sorry! Your results were not found.</MudText>
+        <MudText Align="Align.Center" Class="mt-5">
+            <MudLink Href="/">Back to Assessment</MudLink>
+        </MudText>
+    }
+}
+
+@code {
+    private AssessmentResults? _results;
+    private bool _loading = true;
+
+    protected override void OnInitialized()
+    {
+        _loading = true;
+        _results = StateService.GetAssessmentResults();
+        _loading = false;
+    }
+}
