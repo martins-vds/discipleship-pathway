@@ -10,9 +10,9 @@
 {
     <MudText Typo="Typo.h2" Align="Align.Center">Discipleship Pathway Assessment</MudText>
     <div class="d-flex flex-column mt-4">
-        @foreach (var questionsBySection in Assessment.Questions.GroupBy(q => q.Section))
+        @foreach (var questionsBySection in Assessment.Questions.GroupBy(q => q.SectionLabel))
         {
-            <MudText Typo="Typo.h5">Section @questionsBySection.Key</MudText>
+            <MudText Typo="Typo.h5">@questionsBySection.Key</MudText>
             <MudDivider Class="mb-4"   />
             @foreach (var question in questionsBySection)
             {

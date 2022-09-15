@@ -36,7 +36,7 @@
 
         foreach (var sectionAverage in Results.AverageBySection)
         {
-            _chartConfig.Data.Labels.Add($"Section {sectionAverage.Section}");
+            _chartConfig.Data.Labels.Add(sectionAverage.Section);
             dataset.Add(sectionAverage.Average);
         }
 

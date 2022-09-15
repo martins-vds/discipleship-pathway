@@ -44,7 +44,7 @@ namespace DiscipleshipPathway.Web.Models
         {
             var results = new AssessmentResults();
 
-            var questionsBySection = _questions.GroupBy(q => q.Section);
+            var questionsBySection = _questions.GroupBy(q => q.SectionLabel);
 
             foreach (var groupOfQuestions in questionsBySection)
             {

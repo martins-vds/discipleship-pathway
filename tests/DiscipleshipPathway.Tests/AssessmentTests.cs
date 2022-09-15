@@ -11,8 +11,8 @@ namespace DiscipleshipPathway.Tests
         {
             Assessment assessment = new Assessment();
 
-            Question question = new Question(text: "A question", weight: 1, section: 1, order: 1);
-            Question anotherQuestion = new Question(text: "Another question", weight: -1, section: 2, order: 1);
+            Question question = new Question(text: "A question", weight: 1, section: 1, sectionLabel: "Section", order: 1);
+            Question anotherQuestion = new Question(text: "Another question", weight: -1, section: 2, sectionLabel: "Another section", order: 1);
 
             assessment.AddQuestion(question);
             assessment.AddQuestion(anotherQuestion);
@@ -28,12 +28,12 @@ namespace DiscipleshipPathway.Tests
                 {
                     new SectionAverage()
                     {
-                        Section = 1,
+                        Section = "Section",
                         Average = 1
                     },
                     new SectionAverage()
                     {
-                        Section = 2,
+                        Section = "Another section",
                         Average = 5
                     }
                 }
