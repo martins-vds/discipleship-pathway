@@ -1,6 +1,5 @@
 @page "/.well-known/{*acmeChallenge}"
-
-@Challenge
+@inject IJSRuntime JSRuntime
 
 @code{
 
@@ -8,4 +7,10 @@
     public string? AcmeChallenge { get; set; }
 
     public string Challenge => "19GJBNiY2Cxj6cK84xTPx_-4B7Ln2x-YxAQoER1r-wg.eqm6LfgvOjo010NB-CBvZRDl1_zXszwTKQCl5r2aT_I";
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            byte[] file = System.Text.Encoding.UTF8.GetBytes(Challenge);
+            await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "file.txt", "text/plain", file);
+        }
 }
